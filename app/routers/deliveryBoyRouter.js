@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const DeliveryBoyController = require('../controllers/DeliveryBoyController');
+const DeliveryBoyController = require('../controllers/deliveryBoyController');
 
 // Define delivery boy-related routes...
 
