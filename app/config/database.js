@@ -1,13 +1,10 @@
-const db_host = process.env.DB_HOST || "localhost";
-const db_pw = process.env.DB_PW || "rajitha123";
-const db_user = process.env.DB_USER || "rajitha";
-const db_name = process.env.DB_NAME || "courier_service";
+const { Sequelize } = require('sequelize');
 
-module.exports = {
-  HOST: db_host,
-  USER: db_user,
-  PASSWORD: db_pw,
-  DB: db_name,
+const dbConfig = {
+  HOST: "localhost",
+  USER: "rajitha",
+  PASSWORD: "rajitha123",
+  DB: "dm",
   dialect: "mysql",
   pool: {
     max: 5,
@@ -16,3 +13,16 @@ module.exports = {
     idle: 10000,
   },
 };
+
+const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
+  host: dbConfig.HOST,
+  dialect: dbConfig.dialect,
+  pool: {
+    max: dbConfig.pool.max,
+    min: dbConfig.pool.min,
+    acquire: dbConfig.pool.acquire,
+    idle: dbConfig.pool.idle,
+  },
+});
+
+module.exports = sequelize;
