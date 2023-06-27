@@ -3,7 +3,11 @@ const app = express();
 const sequelize = require('./config/database');
 const User = require('./models/User');
 const Role = require('./models/Role');
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./routers/userRouter');
+const locationRoutes = require('./routers/locationRouter');
+const orderRoutes = require('./routers/orderRouter');
+const deliveryBoyRoutes = require('./routers/deliveryBoyRouter');
+const orderHistoryLogRoutes = require('./routers/orderHistoryRouter');
 
 // Connect to the database
 sequelize
@@ -20,6 +24,10 @@ app.use(express.json());
 
 // Routes
 app.use('/users', userRoutes);
+app.use('/locations', locationRoutes);
+app.use('/orders', orderRoutes);
+app.use('/delivery-boys', deliveryBoyRoutes);
+app.use('/order-history-logs', orderHistoryLogRoutes);
 
 // Seed dummy data
 const seedData = async () => {
