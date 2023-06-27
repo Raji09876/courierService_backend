@@ -1,4 +1,4 @@
-const DeliveryBoy = require('../models/DeliveryBoy');
+const DeliveryBoy = require('../models/deliveryBoy');
 
 // Create a delivery boy
 exports.createDeliveryBoy = async (req, res) => {

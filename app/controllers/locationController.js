@@ -1,4 +1,4 @@
-const Location = require('../models/Location');
+const Location = require('../models/location');
 
 // Create a location
 exports.createLocation = async (req, res) => {

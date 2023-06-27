@@ -1,5 +1,5 @@
-const Order = require('../models/Order');
-const DeliveryBoy = require('../models/DeliveryBoy');
+const Order = require('../models/order');
+const DeliveryBoy = require('../models/deliveryBoy');
 const moment = require('moment');
 
 // Create an order
