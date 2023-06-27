@@ -4,7 +4,7 @@ const dbConfig = {
   HOST: "localhost",
   USER: "rajitha",
   PASSWORD: "rajitha123",
-  DB: "dm",
+  DB: "courier_service",
   dialect: "mysql",
   pool: {
     max: 5,
