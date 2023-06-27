@@ -1,41 +1,76 @@
-require("dotenv").config();
-
-const express = require("express");
-const cors = require("cors");
-
+const express = require('express');
 const app = express();
+const sequelize = require('./config/database');
+const User = require('./models/User');
+const Role = require('./models/Role');
+const userRoutes = require('./routes/userRoutes');
 
-const db = require("./app/models");
+// Connect to the database
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connected to the database.');
+  })
+  .catch((error) => {
+    console.error('Unable to connect to the database:', error);
+  });
 
-db.sequelize.sync();
-
-var corsOptions = {
-  origin: "*",
-};
-
-app.use(cors(corsOptions));
-app.options("*", cors());
-
-// parse requests of content-type - application/json
+// Middleware
 app.use(express.json());
 
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+// Routes
+app.use('/users', userRoutes);
 
-// simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the courier backend." });
-});
+// Seed dummy data
+const seedData = async () => {
+  try {
+    await sequelize.sync({ force: true });
 
-require("./app/routes/auth.routes.js")(app);
-require("./app/routes/user.routes")(app);
+    // Seed roles
+    await Role.bulkCreate([
+      { name: 'admin' },
+      { name: 'clerk' },
+      { name: 'delivery boy' },
+    ]);
 
-// set port, listen for requests
+    // Seed users
+    await User.bulkCreate([
+      {
+        username: 'admin',
+        password: 'admin123',
+        role_id: 1,
+        name: 'John Doe',
+        email: 'admin@example.com',
+        phone: '1234567890',
+      },
+      {
+        username: 'clerk',
+        password: 'clerk123',
+        role_id: 2,
+        name: 'Jane Smith',
+        email: 'clerk@example.com',
+        phone: '9876543210',
+      },
+      {
+        username: 'deliveryboy',
+        password: 'delivery123',
+        role_id: 3,
+        name: 'Michael Johnson',
+        email: 'delivery@example.com',
+        phone: '5555555555',
+      },
+    ]);
+
+    console.log('Dummy data seeded successfully.');
+  } catch (error) {
+    console.error('Failed to seed dummy data:', error);
+  }
+};
+
+// Start the server
 const PORT = process.env.PORT || 3200;
-if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
-  });
-}
-
-module.exports = app;
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+  // Seed dummy data
+  seedData();
+});
