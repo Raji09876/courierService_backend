@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const Order = require('./Order');
-const User = require('./User');
+const Order = require('./order');
+const User = require('./user');
 
 const OrderHistoryLog = sequelize.define(
   'OrderHistoryLog',
