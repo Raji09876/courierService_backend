@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
-const sequelize = require('./config/database');
-const User = require('./models/User');
-const Role = require('./models/Role');
-const userRoutes = require('./routers/userRouter');
-const locationRoutes = require('./routers/locationRouter');
-const orderRoutes = require('./routers/orderRouter');
-const deliveryBoyRoutes = require('./routers/deliveryBoyRouter');
-const orderHistoryLogRoutes = require('./routers/orderHistoryRouter');
+const sequelize = require('./app/config/database');
+const User = require('./app/models/User');
+const Role = require('./app/models/Role');
+const userRoutes = require('./app/routers/userRouter');
+const locationRoutes = require('./app/routers/locationRouter');
+const orderRoutes = require('./app/routers/orderRouter');
+const deliveryBoyRoutes = require('./app/routers/deliveryBoyRouter');
+const orderHistoryLogRoutes = require('./app/routers/orderHistoryRouter');
 
 // Connect to the database
 sequelize
