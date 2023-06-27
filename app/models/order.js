@@ -1,8 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const User = require('./User');
-const Location = require('./Location');
-const DeliveryBoy = require('./DeliveryBoy');
+const User = require('./user');
+const Location = require('./location');
+const DeliveryBoy = require('./deliveryBoy');
 
 const Order = sequelize.define(
   'Order',
