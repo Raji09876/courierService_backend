@@ -1,84 +1,128 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const { sequelize } = require('./app/models/index');
+const authRoutes  = require("./app/routers/auth.router");
+const userRoutes  = require("./app/routers/user.router");
+const db = require("./app/models");
+const Location = db.location;
+
+const cors = require("cors");
+
 const app = express();
-const sequelize = require('./app/config/database');
-const User = require('./app/models/user');
-const Role = require('./app/models/role');
-const userRoutes = require('./app/routers/userRouter');
-const locationRoutes = require('./app/routers/locationRouter');
-const orderRoutes = require('./app/routers/orderRouter');
-const deliveryBoyRoutes = require('./app/routers/deliveryBoyRouter');
-const orderHistoryLogRoutes = require('./app/routers/orderHistoryRouter');
+const PORT = 3200;
 
-// Connect to the database
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connected to the database.');
-  })
-  .catch((error) => {
-    console.error('Unable to connect to the database:', error);
-  });
+let corsOptions = {
+  origin: "*",
+};
+app.use(cors(corsOptions));
+app.options("*", cors());
 
-// Middleware
-app.use(express.json());
+app.get('/',(req,res)=>{
+  res.send("Welcome to OKC couriers backend!")
+})
 
-// Routes
-app.use('/users', userRoutes);
-app.use('/locations', locationRoutes);
-app.use('/orders', orderRoutes);
-app.use('/delivery-boys', deliveryBoyRoutes);
-app.use('/order-history-logs', orderHistoryLogRoutes);
+app.use(bodyParser.json());
+app.use(authRoutes);
+app.use(userRoutes);
+require("./app/routers/customer.router")(app);
+require("./app/routers/courier.router")(app);
+require("./app/routers/role.router")(app);
 
-// Seed dummy data
-const seedData = async () => {
+const graph = {
+  '1A': { '2A': 1},
+  '1B': { '1A': 1},
+  '1C': { '1B': 1, '2C': 1},
+  '1D': { '1C': 1, '2D': 1},
+  '1E': { '1D': 1, '2E': 1},
+  '1F': { '1E': 1},
+  '1G': { '1F': 1, '2G': 1},
+  '2A': { '3A': 1},
+  '3A': { '4A': 1},
+  '4A': { '5A': 1},
+  '5A': { '6A': 1},
+  '6A': { '7A': 1},
+
+'2B': { '1B': 1, '2A': 1, '2C': 1},
+'2C': { '3C': 1, '2B': 1, '2D': 1},
+'2D': { '1D': 1, '2C': 1, '2E': 1, '3D': 1},
+'2E': { '3E': 1, '2D': 1, '2F': 1},
+'2F': { '1F': 1, '2E': 1, '2G': 1},
+'2G': { '3G': 1, '2F': 1},
+
+'3B': { '2B': 1, '3A': 1},
+'3C': { '4C': 1, '3B': 1},
+'3D': { '4D': 1, '3C': 1, '2D': 1},
+'3E': { '3D': 1, '4E': 1},
+'3F': { '3E': 1, '2F': 1},
+'3G': { '3F': 1, '4G': 1},
+
+'4B': { '4C': 1, '3B': 1},
+'4C': { '5C': 1, '4D': 1},
+'4D': { '3D': 1, '5D': 1, '4E': 1},
+'4E': { '4F': 1, '5E': 1},
+'4F': { '4G': 1, '3F': 1},
+'4G': { '5G': 1},
+
+'5B': { '5A': 1, '4B': 1},
+'5C': { '5B': 1, '6C': 1},
+'5D': { '4D': 1, '6D': 1, '5C': 1},
+'5E': { '5D': 1, '6E': 1},
+'5F': { '4F': 1, '5E': 1},
+'5G': { '5F': 1, '6G': 1},
+
+'6B': { '5B': 1, '6A': 1, '6C': 1},
+'6C': { '6B': 1, '6D': 1, '7C': 1},
+'6D': { '6C': 1, '6E': 1, '5D': 1, '7D': 1},
+'6E': { '6D': 1, '6F': 1, '7E': 1},
+'6F': { '6E': 1, '6G': 1, '5F': 1},
+'6G': { '6F': 1, '7G': 1},
+
+'7B': { '6B': 1, '7A': 1},
+'7C': { '7B': 1},
+'7D': { '6D': 1, '7C': 1},
+'7E': { '7D': 1},
+'7F': { '7E': 1, '6F': 1},
+'7G': { '7F': 1},
+}
+
+// Function to populate the Graph table with data
+const populateGraphTable = async () => {
   try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync(); // Sync models with the database
 
-    // Seed roles
-    await Role.bulkCreate([
-      { name: 'admin' },
-      { name: 'clerk' },
-      { name: 'delivery boy' },
-    ]);
+    // Clear existing data from the Graph table
+    await Location.destroy({ truncate: true });
 
-    // Seed users
-    await User.bulkCreate([
-      {
-        username: 'admin',
-        password: 'admin123',
-        role_id: 1,
-        name: 'John Doe',
-        email: 'admin@example.com',
-        phone: '1234567890',
-      },
-      {
-        username: 'clerk',
-        password: 'clerk123',
-        role_id: 2,
-        name: 'Jane Smith',
-        email: 'clerk@example.com',
-        phone: '9876543210',
-      },
-      {
-        username: 'deliveryboy',
-        password: 'delivery123',
-        role_id: 3,
-        name: 'Michael Johnson',
-        email: 'delivery@example.com',
-        phone: '5555555555',
-      },
-    ]);
+    // Bulk insert the graph data into the Graph table
+    const graphData = [];
 
-    console.log('Dummy data seeded successfully.');
+    Object.entries(graph).forEach(([source, destinations]) => {
+      Object.entries(destinations).forEach(([destination, weight]) => {
+        graphData.push({ source, destination });
+      });
+    });
+
+    await Location.bulkCreate(graphData);
+
+    console.log('Graph table populated successfully.');
   } catch (error) {
-    console.error('Failed to seed dummy data:', error);
+    console.error('Error populating Graph table:', error);
   }
 };
 
-// Start the server
-const PORT = process.env.PORT || 3200;
+async function databaseSync() {
+
+  //uncomment to create tables
+  await sequelize.sync().then(() => {
+    console.log('Database synced');
+  }).catch((error) => {
+    console.error('Error syncing database:', error);
+  });
+  populateGraphTable();
+}
+databaseSync()
+
+
 app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
-  // Seed dummy data
-  seedData();
+  console.log(`Server listening on port ${PORT}`);
 });

@@ -1,49 +1,43 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
-const Role = require('./role');
-
-const User = sequelize.define(
-  'User',
-  {
-    user_id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
+module.exports = (sequelize, Sequelize) => {
+  const User = sequelize.define("user", {
+    id:{
+      type: Sequelize.INTEGER,
       autoIncrement: true,
+      primaryKey: true
     },
-    username: {
-      type: DataTypes.STRING,
+    firstName: {
+      type: Sequelize.STRING,
       allowNull: false,
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
+    lastName: {
+      type: Sequelize.STRING,
       allowNull: false,
     },
     email: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
-      validate: {
-        isEmail: true,
-      },
     },
-    phone: {
-      type: DataTypes.STRING,
+    phoneNumber: {
+      type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
-      validate: {
-        is: /^\d{10}$/i,
-      },
     },
+    password: {
+      type: Sequelize.BLOB,
+      allowNull: false,
+    },
+    salt: {
+      type: Sequelize.BLOB,
+      allowNull: false,
+    },
+    isAvailable: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    }
   },
   {
-    timestamps: false,
-  }
-);
+    timestamps: false, 
+   }
+  );
 
-User.belongsTo(Role, { foreignKey: 'role_id' });
-
-module.exports = User;
+  return User;
+};
