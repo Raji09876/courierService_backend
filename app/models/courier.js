@@ -29,7 +29,15 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        deliveryTime: {
+        deliveredTime: {
+            type: Sequelize.DATE,
+            allowNull: true,
+        },
+        isDeliveredInTime: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true, 
+        },
+        pickedupTime: {
             type: Sequelize.DATE,
             allowNull: true,
         },
@@ -40,7 +48,12 @@ module.exports = (sequelize, Sequelize) => {
         deliveryLocation: {
             type: Sequelize.STRING,
             allowNull: false,
-        },  
+        }, 
+        CourierBoyPoints: {
+            type: Sequelize.STRING,
+            allowNull: false,
+            defaultValue: 0
+        } 
     },
     {
      timestamps: true, 
