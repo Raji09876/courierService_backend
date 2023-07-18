@@ -115,7 +115,7 @@ exports.findAll = (req, res) => {
       });
     });
 };
-exports.findAvailableDeliveryBoys = (req,res) => {
+exports.findAvailableCourierBoys = (req,res) => {
   const condition = {
     roleId: 3,
     isAvailable: 1
