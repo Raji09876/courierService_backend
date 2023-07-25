@@ -304,7 +304,7 @@ exports.taken  = async(req, res) => {
         res.send({
           message: "courier was updated successfully.",
         });
-        sendEmailToCustomer(courier,"Your Courier is Pickedup!")
+        sendEmailToCustomer(courier,"Your Order is Pickedup!")
       } else {
         res.send({
           message: `Cannot update courier with id=${id}. Maybe courier was not found or req.body is empty!`,
@@ -347,7 +347,7 @@ exports.done  = async(req, res) => {
         res.send({
           message: "courier was updated successfully.",
         });
-        sendEmailToCustomer(courier,"Your courier is Delivered!")
+        sendEmailToCustomer(courier,"Your Order is Delivered!")
       } else {
         res.send({
           message: `Cannot update courier with id=${id}. Maybe courier was not found or req.body is empty!`,
@@ -374,14 +374,14 @@ const sendEmailToCustomer = async(data,text) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'email',
-      pass: 'password'
+      user: 'Rajitha.Gadiparthi@eagles.oc.edu',
+      pass: 'swshondwxvcqwznz'
     }
   });
 
   // Define the email options
   const mailOptions = {
-    from: 'email',
+    from: 'Rajitha.Gadiparthi@eagles.oc.edu',
     to: customer.email,
     subject: "ACME COURIERS",
     text
@@ -406,14 +406,14 @@ const sendEmailToCourierBoy = async(data) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'email',
-      pass: 'password'
+      user: 'Rajitha.Gadiparthi@eagles.oc.edu',
+      pass: 'swshondwxvcqwznz'
     }
   });
 
   // Define the email options
   const mailOptions = {
-    from: 'email',
+    from: 'Rajitha.Gadiparthi@eagles.oc.edu',
     to: courierBoy.email,
     subject: "ACME COURIERS",
     text: "You are assigned to a new courier with id "+data.id+", please check the website!"
