@@ -118,7 +118,6 @@ exports.findAll = (req, res) => {
 exports.findAvailableCourierBoys = (req,res) => {
   const condition = {
     roleId: 3,
-    isAvailable: 1
   };
   User.findAll({ where: condition })
     .then((data) => {
