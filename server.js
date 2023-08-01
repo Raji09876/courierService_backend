@@ -27,6 +27,7 @@ app.use(userRoutes);
 require("./app/routers/customer.router")(app);
 require("./app/routers/courier.router")(app);
 require("./app/routers/role.router")(app);
+require("./app/routers/dashboard.router")(app);
 
 const graph = {
   '1A': { '2A': 1},
